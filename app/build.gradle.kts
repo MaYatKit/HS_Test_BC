@@ -21,12 +21,19 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            isShrinkResources = false
+
+            buildConfigField ("String", "API_URL", "\"https://api.github.com/\"")
+            buildConfigField ("String", "CLIENT_ID", "\"Ov23lic9Zdt9If7rLC5G\"")
+            buildConfigField ("String", "CLIENT_SECRET", "\"f041053e5d4f703ccbf1ec740501a8e0c1ec33e1\"")
+
+            val redirectHost = "oauth"
+            val redirectScheme = "hsbc"
+            buildConfigField ("String", "REDIRECT_HOST", "\"${redirectHost}\"")
+            buildConfigField ("String", "REDIRECT_SCHEME", "\"${redirectScheme}\"")
+            manifestPlaceholders += mapOf(redirectHost to redirectHost, redirectScheme to redirectScheme)
         }
     }
     compileOptions {
@@ -38,6 +45,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions.unitTests {
@@ -64,6 +72,12 @@ dependencies {
     implementation(libs.hilt.android.testing)
     implementation(libs.androidx.annotation)
     ksp(libs.hilt.compiler)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.scalars)
+    implementation(libs.retrofit.gson)
+    implementation(libs.coil.compose)
+
 
 
     testImplementation(libs.hilt.android.testing)

@@ -4,44 +4,70 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.hs_test_bc.ui.nav.Navigation
 import com.example.hs_test_bc.ui.theme.HS_Test_BCTheme
+import com.example.hs_test_bc.utils.NetworkConnectivityObserver.Status
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
-class MainActivity : ComponentActivity() {
+@AndroidEntryPoint
+class MainActivity: ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             HS_Test_BCTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                    val snackBarHostState = remember { SnackbarHostState() }
+
+                    LaunchedEffect(true) {
+                        viewModel.networkStatus.collectLatest { status ->
+                            when (status) {
+                                Status.Available -> {
+                                    snackBarHostState.currentSnackbarData?.dismiss()
+                                }
+                                Status.Lost -> {
+                                    snackBarHostState.showSnackbar(
+                                        message = "Connection lost"
+                                    )
+                                }
+                                Status.Losing -> {
+                                    snackBarHostState.showSnackbar(
+                                        message = "Signal weak"
+                                    )
+                                }
+                                Status.Unavailable -> {
+                                    snackBarHostState.showSnackbar(
+                                        message = "No connection"
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        Navigation(snackBarHostState = snackBarHostState)
+                    }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    HS_Test_BCTheme {
-        Greeting("Android")
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.stopObserveNetwork()
     }
 }
