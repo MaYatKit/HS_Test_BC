@@ -1,6 +1,7 @@
 package com.example.hs_test_bc.data.repositoryImpl
 
 import com.example.hs_test_bc.data.remote.api.GitHubApi
+import com.example.hs_test_bc.data.remote.model.RepositoryResponse
 import com.example.hs_test_bc.data.remote.model.SearchRepositoriesResponse
 import com.example.hs_test_bc.domain.repository.GitHubRepository
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +43,12 @@ class GitHubRepositoryImpl @Inject constructor(
             emit(SearchRepositoriesResponse(0, true, emptyList()))
         }
     }
+
+
+    override fun getRepository(owner: String, repo: String): Flow<RepositoryResponse> =
+        flow {
+            emit(gitHubApiService.getRepository(owner, repo))
+        }
 
 
 }

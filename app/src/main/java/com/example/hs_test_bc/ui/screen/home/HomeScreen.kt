@@ -23,6 +23,10 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    goToSearch: () -> Unit = {},
+    goToRepository: (owner: String, repo: String) -> Unit = { _,_ -> },
+    goToLogin: () -> Unit = {},
+    goToUser: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
@@ -55,7 +59,7 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(text = "HS_Test_BC") },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = goToSearch) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search"
@@ -83,6 +87,7 @@ fun HomeScreen(
                         listState = listState,
                         isLoadingMore = loadingMore,
                         hasMoreData = state.hasMoreData,
+                        onItemClick = goToRepository
                     )
                 }
 

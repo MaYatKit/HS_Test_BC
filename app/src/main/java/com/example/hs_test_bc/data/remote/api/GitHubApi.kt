@@ -1,7 +1,9 @@
 package com.example.hs_test_bc.data.remote.api
 
+import com.example.hs_test_bc.data.remote.model.RepositoryResponse
 import com.example.hs_test_bc.data.remote.model.SearchRepositoriesResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface GitHubApi {
@@ -15,5 +17,10 @@ interface GitHubApi {
     ): SearchRepositoriesResponse
 
 
+    @GET("repos/{owner}/{repo}")
+    suspend fun getRepository(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String
+    ): RepositoryResponse
 
 }
