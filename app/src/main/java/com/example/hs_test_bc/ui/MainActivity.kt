@@ -1,4 +1,4 @@
-package com.example.hs_test_bc
+package com.example.hs_test_bc.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
