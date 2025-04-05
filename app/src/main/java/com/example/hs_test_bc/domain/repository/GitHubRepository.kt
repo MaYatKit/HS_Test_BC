@@ -2,6 +2,7 @@ package com.example.hs_test_bc.domain.repository
 
 import com.example.hs_test_bc.data.remote.model.RepositoryResponse
 import com.example.hs_test_bc.data.remote.model.SearchRepositoriesResponse
+import com.example.hs_test_bc.data.remote.model.UserResponse
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -21,4 +22,9 @@ interface GitHubRepository {
 
     fun getRepository(owner: String, repo: String): Flow<RepositoryResponse>
 
+    fun getUserRepository(token: String, owner: String, repo: String): Flow<RepositoryResponse>
+
+    fun getUserRepositories(token: String, page: Int = 1): Flow<List<RepositoryResponse>>
+
+    fun getCurrentUser(token: String): Flow<UserResponse>
 }

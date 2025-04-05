@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.hs_test_bc.domain.model.Repository
+import com.example.hs_test_bc.ui.AuthViewModel
 import com.example.hs_test_bc.ui.view.ErrorView
 import com.example.hs_test_bc.ui.view.LoadingView
 import com.example.hs_test_bc.ui.view.RepositoryItem
@@ -28,11 +30,13 @@ fun HomeScreen(
     goToLogin: () -> Unit = {},
     goToUser: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val refreshing by viewModel.refreshing.collectAsState()
     val loadingMore by viewModel.loadingMore.collectAsState()
+    val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
     val listState = rememberLazyListState()
 
@@ -63,6 +67,19 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Search"
+                        )
+                    }
+
+                    IconButton(onClick = {
+                        if (isLoggedIn) {
+                            goToUser()
+                        } else {
+                            goToLogin()
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = if (isLoggedIn) "Profile" else "Login"
                         )
                     }
                 }

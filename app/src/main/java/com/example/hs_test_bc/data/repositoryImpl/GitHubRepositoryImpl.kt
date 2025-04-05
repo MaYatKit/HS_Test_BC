@@ -3,6 +3,7 @@ package com.example.hs_test_bc.data.repositoryImpl
 import com.example.hs_test_bc.data.remote.api.GitHubApi
 import com.example.hs_test_bc.data.remote.model.RepositoryResponse
 import com.example.hs_test_bc.data.remote.model.SearchRepositoriesResponse
+import com.example.hs_test_bc.data.remote.model.UserResponse
 import com.example.hs_test_bc.domain.repository.GitHubRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -10,6 +11,7 @@ import javax.inject.Inject
 
 /**
  * Implementation of the GitHubRepository interface.
+ * @param gitHubApiService The GitHubApi instance for making API calls.
  */
 class GitHubRepositoryImpl @Inject constructor(
     private val gitHubApiService: GitHubApi
@@ -25,7 +27,7 @@ class GitHubRepositoryImpl @Inject constructor(
         try {
             val response = gitHubApiService.searchRepositories(finalQuery, sort, "desc", page)
             emit(response)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
             emit(SearchRepositoriesResponse(0, true, emptyList()))
         }
@@ -44,12 +46,28 @@ class GitHubRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getRepository(
+        owner: String,
+        repo: String
+    ): Flow<RepositoryResponse> = flow {
+        emit(gitHubApiService.getRepository(owner, repo))
+    }
 
-    override fun getRepository(owner: String, repo: String): Flow<RepositoryResponse> =
-        flow {
-            emit(gitHubApiService.getRepository(owner, repo))
-        }
+    override fun getUserRepository(
+        token: String, owner: String, repo: String
+    ): Flow<RepositoryResponse> = flow {
+        emit(gitHubApiService.getRepository("token $token", owner, repo))
+    }
 
+    override fun getUserRepositories(
+        token: String,
+        page: Int
+    ): Flow<List<RepositoryResponse>> = flow {
+        emit(gitHubApiService.getUserRepositories("token $token", "updated", page))
+    }
+
+    override fun getCurrentUser(token: String): Flow<UserResponse> = flow {
+        emit(gitHubApiService.getCurrentUser("token $token"))
+    }
 
 }
-

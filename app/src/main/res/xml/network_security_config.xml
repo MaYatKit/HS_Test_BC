@@ -4,6 +4,7 @@
         <domain includeSubdomains="true">api.github.com</domain>
         <domain includeSubdomains="true">avatars.githubusercontent.com</domain>
         <domain includeSubdomains="true">raw.githubusercontent.com</domain>
+        <domain includeSubdomains="true">github.com</domain>
         <trust-anchors>
             <certificates src="user"/>
             <certificates src="system"/>

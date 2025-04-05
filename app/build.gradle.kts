@@ -33,7 +33,7 @@ android {
             val redirectScheme = "hsbc"
             buildConfigField ("String", "REDIRECT_HOST", "\"${redirectHost}\"")
             buildConfigField ("String", "REDIRECT_SCHEME", "\"${redirectScheme}\"")
-            manifestPlaceholders += mapOf(redirectHost to redirectHost, redirectScheme to redirectScheme)
+            manifestPlaceholders += mapOf("redirectHost" to redirectHost, "redirectScheme" to redirectScheme)
         }
     }
     compileOptions {
@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.retrofit.scalars)
     implementation(libs.retrofit.gson)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.datastore)
 
 
 

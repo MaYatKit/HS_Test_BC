@@ -8,11 +8,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.hs_test_bc.ui.nav.Screen.Login
 import com.example.hs_test_bc.ui.nav.Screen.Repository
 import com.example.hs_test_bc.ui.nav.Screen.Search
 import com.example.hs_test_bc.ui.screen.home.HomeScreen
+import com.example.hs_test_bc.ui.screen.login.LoginScreen
 import com.example.hs_test_bc.ui.screen.repository.RepositoryScreen
 import com.example.hs_test_bc.ui.screen.search.SearchScreen
+import com.example.hs_test_bc.ui.screen.user.UserScreen
 
 @Composable
 fun Navigation(
@@ -31,6 +34,12 @@ fun Navigation(
                 },
                 goToRepository = { owner, repo ->
                     navController.navigate(Repository.createRoute(owner, repo))
+                },
+                goToLogin = {
+                    navController.navigate(Screen.Login.route)
+                },
+                goToUser = {
+                    navController.navigate(Screen.User.route)
                 },
                 snackBarHostState = snackBarHostState
             )
@@ -65,6 +74,34 @@ fun Navigation(
                 }
             )
         }
+
+
+        composable(Login.route) {
+            LoginScreen(
+                goToUser = {
+                    navController.popBackStack()
+                    navController.navigate(Screen.User.route)
+                },
+                goBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Screen.User.route) {
+            UserScreen(
+                goToRepository = { owner, repo ->
+                    navController.navigate(Repository.createRoute(owner, repo))
+                },
+                goToLogin = {
+                    navController.popBackStack()
+                    navController.navigate(Login.route)
+                },
+                goBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
 
@@ -74,6 +111,9 @@ sealed class Screen(val route: String) {
     object Repository : Screen("repository/{owner}/{repo}") {
         fun createRoute(owner: String, repo: String) = "repository/$owner/$repo"
     }
-
-
+    object Login : Screen("login")
+    object User : Screen("user")
+    object CreateIssue : Screen("issue/{owner}/{repo}") {
+        fun createRoute(owner: String, repo: String) = "issue/$owner/$repo"
+    }
 }
