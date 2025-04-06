@@ -5,6 +5,7 @@ import com.example.hs_test_bc.data.local.AuthPreferences
 import com.example.hs_test_bc.data.remote.api.AuthService
 import com.example.hs_test_bc.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

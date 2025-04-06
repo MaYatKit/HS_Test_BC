@@ -30,17 +30,15 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = LoginUiState.Loading
 
-            checkAuthStatusUseCase()
-                .catch {
-                    _uiState.value = LoginUiState.NotAuthenticated
+            checkAuthStatusUseCase.execute().catch {
+                _uiState.value = LoginUiState.NotAuthenticated
+            }.collect { isAuthenticated ->
+                _uiState.value = if (isAuthenticated) {
+                    LoginUiState.Authenticated
+                } else {
+                    LoginUiState.NotAuthenticated
                 }
-                .collectLatest { isAuthenticated ->
-                    _uiState.value = if (isAuthenticated) {
-                        LoginUiState.Authenticated
-                    } else {
-                        LoginUiState.NotAuthenticated
-                    }
-                }
+            }
         }
     }
 

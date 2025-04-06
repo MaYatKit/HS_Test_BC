@@ -70,10 +70,6 @@ class MainActivity: ComponentActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        handleIntent(intent)
-    }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)

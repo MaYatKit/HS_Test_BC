@@ -22,6 +22,7 @@ import com.example.hs_test_bc.ui.AuthViewModel
 import com.example.hs_test_bc.ui.view.ErrorView
 import com.example.hs_test_bc.ui.view.LoadingView
 import com.example.hs_test_bc.ui.view.RepositoryItem
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +36,7 @@ fun UserScreen(
     val uiState by viewModel.uiState.collectAsState()
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(true) {
         viewModel.loadUserProfile()
     }
 
@@ -46,7 +47,8 @@ fun UserScreen(
     }
 
     LaunchedEffect(key1 = isLoggedIn) {
-        if (!isLoggedIn) {
+        delay(500)
+        if (!isLoggedIn && uiState !is ProfileUiState.Loading) {
             goToLogin()
         }
     }

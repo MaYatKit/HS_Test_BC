@@ -7,6 +7,7 @@ import com.example.hs_test_bc.domain.usecase.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class AuthViewModel @Inject constructor(
 
     private fun checkAuthStatus() {
         viewModelScope.launch {
-            checkAuthStatusUseCase().collect { isAuthenticated ->
+            checkAuthStatusUseCase.execute().collectLatest { isAuthenticated ->
                 _isLoggedIn.value = isAuthenticated
             }
         }

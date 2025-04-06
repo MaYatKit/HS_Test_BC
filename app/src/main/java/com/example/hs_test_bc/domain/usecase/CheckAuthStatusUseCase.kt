@@ -10,7 +10,7 @@ class CheckAuthStatusUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
 
-    operator fun invoke(): Flow<Boolean> {
+    fun execute(): Flow<Boolean> {
         return authRepository.isLoggedIn()
     }
 }
