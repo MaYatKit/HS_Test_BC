@@ -45,9 +45,7 @@ class CreateIssueViewModel @Inject constructor(
         }
     }
 
-    fun resetState() {
-        _uiState.value = CreateIssueUiState.Initial
-    }
+
 }
 
 sealed class CreateIssueUiState {
