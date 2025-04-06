@@ -20,21 +20,21 @@ class UserViewModel @Inject constructor(
     private val getUserRepositoriesUseCase: GetUserRepositoriesUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<ProfileUiState>(ProfileUiState.Loading)
-    val uiState: StateFlow<ProfileUiState> = _uiState
+    private val _uiState = MutableStateFlow<UserUiState>(UserUiState.Loading)
+    val uiState: StateFlow<UserUiState> = _uiState
 
     private var currentPage = 1
 
-    fun loadUserProfile() {
+    fun loadUser() {
         viewModelScope.launch {
-            _uiState.value = ProfileUiState.Loading
+            _uiState.value = UserUiState.Loading
 
             try {
                 getUserProfileUseCase.execute().collectLatest { user ->
                     loadUserRepositories(user)
                 }
             } catch (e: Exception) {
-                _uiState.value = ProfileUiState.Error(e.localizedMessage ?: "Unknown error occurred")
+                _uiState.value = UserUiState.Error(e.localizedMessage ?: "Unknown error occurred")
             }
         }
     }
@@ -43,15 +43,15 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             getUserRepositoriesUseCase.execute(page)
                 .catch { e ->
-                    _uiState.value = ProfileUiState.Error(e.localizedMessage ?: "Unknown error occurred")
+                    _uiState.value = UserUiState.Error(e.localizedMessage ?: "Unknown error occurred")
                 }
                 .collectLatest { repositories ->
                     val currentRepos = if (page == 1) emptyList() else
-                        (_uiState.value as? ProfileUiState.Success)?.repositories ?: emptyList()
+                        (_uiState.value as? UserUiState.Success)?.repositories ?: emptyList()
 
                     val newList = currentRepos + repositories
 
-                    _uiState.value = ProfileUiState.Success(
+                    _uiState.value = UserUiState.Success(
                         user = user,
                         repositories = newList,
                         hasMoreRepos = repositories.isNotEmpty()
@@ -62,7 +62,7 @@ class UserViewModel @Inject constructor(
 
     fun loadMoreRepositories() {
         val currentState = _uiState.value
-        if (currentState is ProfileUiState.Success && currentState.hasMoreRepos) {
+        if (currentState is UserUiState.Success && currentState.hasMoreRepos) {
             currentPage++
             loadUserRepositories(currentState.user, currentPage)
         }
@@ -71,13 +71,13 @@ class UserViewModel @Inject constructor(
 
 }
 
-sealed class ProfileUiState {
-    data object Loading : ProfileUiState()
+sealed class UserUiState {
+    data object Loading : UserUiState()
     data class Success(
         val user: User,
         val repositories: List<Repository>,
         val hasMoreRepos: Boolean
-    ) : ProfileUiState()
-    data object LoggedOut : ProfileUiState()
-    data class Error(val message: String) : ProfileUiState()
+    ) : UserUiState()
+    data object LoggedOut : UserUiState()
+    data class Error(val message: String) : UserUiState()
 }

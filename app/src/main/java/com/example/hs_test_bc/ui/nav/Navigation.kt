@@ -8,10 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.hs_test_bc.ui.nav.Screen.CreateIssue
 import com.example.hs_test_bc.ui.nav.Screen.Login
 import com.example.hs_test_bc.ui.nav.Screen.Repository
 import com.example.hs_test_bc.ui.nav.Screen.Search
 import com.example.hs_test_bc.ui.screen.home.HomeScreen
+import com.example.hs_test_bc.ui.screen.issue.CreateIssueScreen
 import com.example.hs_test_bc.ui.screen.login.LoginScreen
 import com.example.hs_test_bc.ui.screen.repository.RepositoryScreen
 import com.example.hs_test_bc.ui.screen.search.SearchScreen
@@ -71,6 +73,9 @@ fun Navigation(
                 repo = repo,
                 goBack = {
                     navController.popBackStack()
+                },
+                goToCreateIssue = { owner, repo ->
+                    navController.navigate(CreateIssue.createRoute(owner, repo))
                 }
             )
         }
@@ -102,18 +107,38 @@ fun Navigation(
                 }
             )
         }
+
+        composable(
+            route = CreateIssue.route,
+            arguments = listOf(
+                navArgument("owner") { type = NavType.StringType },
+                navArgument("repo") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val owner = backStackEntry.arguments?.getString("owner") ?: ""
+            val repo = backStackEntry.arguments?.getString("repo") ?: ""
+
+            CreateIssueScreen(
+                owner = owner,
+                repo = repo,
+                navigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
 
 sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Search : Screen("search")
-    object Repository : Screen("repository/{owner}/{repo}") {
+    object Home: Screen("home")
+    object Search: Screen("search")
+    object Repository: Screen("repository/{owner}/{repo}") {
         fun createRoute(owner: String, repo: String) = "repository/$owner/$repo"
     }
-    object Login : Screen("login")
-    object User : Screen("user")
-    object CreateIssue : Screen("issue/{owner}/{repo}") {
+
+    object Login: Screen("login")
+    object User: Screen("user")
+    object CreateIssue: Screen("issue/{owner}/{repo}") {
         fun createRoute(owner: String, repo: String) = "issue/$owner/$repo"
     }
 }

@@ -1,7 +1,9 @@
 package com.example.hs_test_bc.data.mapper
 
+import com.example.hs_test_bc.data.remote.model.IssueResponse
 import com.example.hs_test_bc.data.remote.model.RepositoryResponse
 import com.example.hs_test_bc.data.remote.model.UserResponse
+import com.example.hs_test_bc.domain.model.Issue
 import com.example.hs_test_bc.domain.model.Repository
 import com.example.hs_test_bc.domain.model.User
 
@@ -32,5 +34,23 @@ fun UserResponse.toDomain(): User {
         id = id,
         avatarUrl = avatar_url,
         htmlUrl = html_url
+    )
+}
+
+
+fun IssueResponse.toDomain(): Issue {
+    return Issue(
+        id = id,
+        number = number,
+        title = title,
+        user = User(
+            login = user.login,
+            id = user.id,
+            avatarUrl = user.avatar_url,
+            htmlUrl = user.html_url
+        ),
+        state = state,
+        createdAt = created_at,
+        body = body
     )
 }

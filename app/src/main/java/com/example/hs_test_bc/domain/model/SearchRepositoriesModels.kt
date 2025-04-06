@@ -28,3 +28,14 @@ data class SearchRepositoriesResult(
     val hasMoreData: Boolean = false,
     val nextPage: Int?
 )
+
+
+data class Issue(
+    val id: Long,
+    val number: Int,
+    val title: String,
+    val user: User,
+    val state: String,
+    val createdAt: String,
+    val body: String?
+)

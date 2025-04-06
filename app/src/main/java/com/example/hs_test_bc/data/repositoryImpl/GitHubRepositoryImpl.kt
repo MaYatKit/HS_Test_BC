@@ -1,6 +1,8 @@
 package com.example.hs_test_bc.data.repositoryImpl
 
 import com.example.hs_test_bc.data.remote.api.GitHubApi
+import com.example.hs_test_bc.data.remote.model.IssueRequest
+import com.example.hs_test_bc.data.remote.model.IssueResponse
 import com.example.hs_test_bc.data.remote.model.RepositoryResponse
 import com.example.hs_test_bc.data.remote.model.SearchRepositoriesResponse
 import com.example.hs_test_bc.data.remote.model.UserResponse
@@ -68,6 +70,18 @@ class GitHubRepositoryImpl @Inject constructor(
 
     override fun getCurrentUser(token: String): Flow<UserResponse> = flow {
         emit(gitHubApiService.getCurrentUser("token $token"))
+    }
+
+
+    override fun createIssue(
+        token: String,
+        owner: String,
+        repo: String,
+        title: String,
+        body: String
+    ): Flow<IssueResponse> = flow {
+        val issueRequest = IssueRequest(title, body)
+        emit(gitHubApiService.createIssue("token $token", owner, repo, issueRequest))
     }
 
 }

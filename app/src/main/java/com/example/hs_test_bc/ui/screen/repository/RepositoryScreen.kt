@@ -203,7 +203,7 @@ fun RepositoryContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { goToCreateIssue },
+            onClick = { goToCreateIssue() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(

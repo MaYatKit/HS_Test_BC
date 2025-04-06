@@ -37,18 +37,18 @@ fun UserScreen(
     val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
 
     LaunchedEffect(true) {
-        viewModel.loadUserProfile()
+        viewModel.loadUser()
     }
 
     LaunchedEffect(key1 = uiState) {
-        if (uiState is ProfileUiState.LoggedOut) {
+        if (uiState is UserUiState.LoggedOut) {
             goToLogin()
         }
     }
 
     LaunchedEffect(key1 = isLoggedIn) {
         delay(500)
-        if (!isLoggedIn && uiState !is ProfileUiState.Loading) {
+        if (!isLoggedIn && uiState !is UserUiState.Loading) {
             goToLogin()
         }
     }
@@ -101,11 +101,11 @@ fun UserScreen(
                 .padding(paddingValues)
         ) {
             when (val state = uiState) {
-                is ProfileUiState.Loading -> {
+                is UserUiState.Loading -> {
                     LoadingView()
                 }
 
-                is ProfileUiState.Success -> {
+                is UserUiState.Success -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()
                     ) {
@@ -153,14 +153,14 @@ fun UserScreen(
                     }
                 }
 
-                is ProfileUiState.Error -> {
+                is UserUiState.Error -> {
                     ErrorView(
                         message = state.message,
-                        onRetry = { viewModel.loadUserProfile() }
+                        onRetry = { viewModel.loadUser() }
                     )
                 }
 
-                is ProfileUiState.LoggedOut -> {}
+                is UserUiState.LoggedOut -> {}
             }
         }
     }

@@ -1,10 +1,14 @@
 package com.example.hs_test_bc.data.remote.api
 
+import com.example.hs_test_bc.data.remote.model.IssueRequest
+import com.example.hs_test_bc.data.remote.model.IssueResponse
 import com.example.hs_test_bc.data.remote.model.RepositoryResponse
 import com.example.hs_test_bc.data.remote.model.SearchRepositoriesResponse
 import com.example.hs_test_bc.data.remote.model.UserResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -44,4 +48,12 @@ interface GitHubApi {
         @Query("page") page: Int = 1,
         @Query("per_page") perPage: Int = 30
     ): List<RepositoryResponse>
+
+    @POST("repos/{owner}/{repo}/issues")
+    suspend fun createIssue(
+        @Header("Authorization") token: String,
+        @Path("owner") owner: String,
+        @Path("repo") repo: String,
+        @Body issue: IssueRequest
+    ): IssueResponse
 }
