@@ -20,7 +20,36 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("keystore.keystore")
+            storePassword = project.findProperty("RELEASE_STORE_PASSWORD") as String? ?: "CwjdurGhdMitL29q4xovbepk"
+            keyAlias = project.findProperty("RELEASE_KEY_ALIAS") as String? ?: "upload"
+            keyPassword = project.findProperty("RELEASE_KEY_PASSWORD") as String? ?: "wxGAG6dpmGsveZiYPG4xEzsD"
+        }
+    }
+
     buildTypes {
+        release {
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            buildConfigField ("String", "API_URL", "\"https://api.github.com/\"")
+            buildConfigField ("String", "CLIENT_ID", "\"Ov23lic9Zdt9If7rLC5G\"")
+            buildConfigField ("String", "CLIENT_SECRET", "\"f041053e5d4f703ccbf1ec740501a8e0c1ec33e1\"")
+
+            val redirectHost = "oauth"
+            val redirectScheme = "hsbc"
+            buildConfigField ("String", "REDIRECT_HOST", "\"${redirectHost}\"")
+            buildConfigField ("String", "REDIRECT_SCHEME", "\"${redirectScheme}\"")
+            manifestPlaceholders += mapOf("redirectHost" to redirectHost, "redirectScheme" to redirectScheme)
+        }
+
         debug {
             isMinifyEnabled = false
             isShrinkResources = false
